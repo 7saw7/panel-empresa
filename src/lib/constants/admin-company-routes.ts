@@ -1,9 +1,13 @@
 export const ADMIN_COMPANY_ROUTES = {
   dashboard: "/dashboard",
-  branches: "/sucursales",
-  companyProfile: "/perfil-negocio",
-  reviews: "/resenias",
-  analytics: "/analytics",
-  verifications: "/verificaciones",
+  clients: "/clientes",
+  quotes: "/cotizaciones",
+  projects: "/proyectos",
+  inventory: "/inventario",
+  technicians: "/tecnicos",
+  finances: "/finanzas",
+  evidences: "/evidencias",
+  services: "/servicios",
+  company: "/empresa",
   settings: "/configuracion",
 } as const;

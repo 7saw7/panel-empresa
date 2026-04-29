@@ -1,0 +1,53 @@
+import type { MockTechnician } from "./types";
+
+export const techniciansMock: MockTechnician[] = [
+  {
+    id: 1,
+    name: "Luis Ramírez",
+    phone: "987 111 222",
+    email: "luis.ramirez@empresa.pe",
+    status: "busy",
+    zone: "Surco / San Miguel",
+    specialties: ["CCTV", "Configuración NVR", "Redes"],
+    activeProjects: 2,
+    completedProjects: 18,
+    rating: 4.8,
+    lastActivity: "2026-04-28 15:20",
+    assignedTo: "Colegio San Marcos",
+    schedule: [
+      { id: 1, day: "Lunes", time: "09:00 - 13:00", projectId: 1, projectName: "Instalación de cámaras IP - Colegio San Marcos" },
+      { id: 2, day: "Miércoles", time: "14:00 - 17:00", projectId: 1, projectName: "Configuración NVR - Colegio San Marcos" },
+    ],
+  },
+  {
+    id: 2,
+    name: "Carlos Peña",
+    phone: "955 444 111",
+    email: "carlos.pena@empresa.pe",
+    status: "available",
+    zone: "Miraflores / San Isidro",
+    specialties: ["Canalizado", "Cableado estructurado", "Electricidad básica"],
+    activeProjects: 1,
+    completedProjects: 12,
+    rating: 4.6,
+    lastActivity: "2026-04-27 18:10",
+    assignedTo: "Condominio Las Palmas",
+    schedule: [
+      { id: 1, day: "Viernes", time: "08:00 - 12:00", projectId: 2, projectName: "Canalizado sótano - Condominio Las Palmas" },
+    ],
+  },
+  {
+    id: 3,
+    name: "Jorge Salazar",
+    phone: "933 201 771",
+    email: "jorge.salazar@empresa.pe",
+    status: "offline",
+    zone: "San Borja / La Molina",
+    specialties: ["Mantenimiento", "Diagnóstico técnico"],
+    activeProjects: 0,
+    completedProjects: 9,
+    rating: 4.4,
+    lastActivity: "2026-04-26 12:30",
+    schedule: [],
+  },
+];

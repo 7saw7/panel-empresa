@@ -1,18 +1,12 @@
-import { handleRoute } from "@/lib/http/handle-route";
-import { requireSession } from "@/lib/auth/session";
-
-export const runtime = "nodejs";
+import { NextResponse } from "next/server";
+import { getMockSession } from "@/features/auth/mock-session";
 
 export async function GET() {
-  return handleRoute(async () => {
-    const session = await requireSession();
+  const user = await getMockSession();
 
-    return {
-      id: session.userId,
-      name: session.name,
-      email: session.email,
-      companyId: session.companyId,
-      role: session.role,
-    };
-  });
+  if (!user) {
+    return NextResponse.json({ user: null }, { status: 401 });
+  }
+
+  return NextResponse.json({ user });
 }

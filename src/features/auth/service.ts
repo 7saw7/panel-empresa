@@ -1,6 +1,9 @@
-import type { AuthUser, LoginInput } from "./types";
+type LoginInput = {
+  email: string;
+  password: string;
+};
 
-export async function loginService(input: LoginInput): Promise<AuthUser> {
+export async function loginService(input: LoginInput) {
   const response = await fetch("/api/auth/login", {
     method: "POST",
     headers: {
@@ -9,40 +12,17 @@ export async function loginService(input: LoginInput): Promise<AuthUser> {
     body: JSON.stringify(input),
   });
 
-  const payload = await response.json();
+  const data = await response.json().catch(() => null);
 
-  if (!response.ok || !payload?.success) {
-    throw new Error(payload?.error?.message || "No se pudo iniciar sesión.");
+  if (!response.ok) {
+    throw new Error(data?.message ?? "No se pudo iniciar sesión.");
   }
 
-  return payload.data.user as AuthUser;
+  return data;
 }
 
-export async function logoutService(): Promise<void> {
-  const response = await fetch("/api/auth/logout", {
+export async function logoutService() {
+  await fetch("/api/auth/logout", {
     method: "POST",
   });
-
-  const payload = await response.json();
-
-  if (!response.ok || !payload?.success) {
-    throw new Error(payload?.error?.message || "No se pudo cerrar sesión.");
-  }
-}
-
-export async function getCurrentUser(): Promise<AuthUser | null> {
-  const response = await fetch("/api/auth/me", {
-    method: "GET",
-    cache: "no-store",
-  });
-
-  if (response.status === 401) return null;
-
-  const payload = await response.json();
-
-  if (!response.ok || !payload?.success) {
-    throw new Error(payload?.error?.message || "No se pudo obtener la sesión.");
-  }
-
-  return payload.data as AuthUser;
 }

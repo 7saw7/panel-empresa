@@ -1,18 +1,17 @@
-import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
-import { requireSession } from "@/lib/auth/session";
-import AdminCompanyShell from "@/components/layout/AdminCompanyShell";
+import { getMockSession } from "@/features/auth/mock-session";
+import { AdminCompanyShell } from "@/components/layout/AdminCompanyShell";
 
 export default async function AdminCompanyLayout({
   children,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
-  const session = await requireSession();
+  const user = await getMockSession();
 
-  if (!session.companyId) {
+  if (!user) {
     redirect("/login");
   }
 
-  return <AdminCompanyShell>{children}</AdminCompanyShell>;
+  return <AdminCompanyShell user={user}>{children}</AdminCompanyShell>;
 }
