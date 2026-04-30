@@ -58,7 +58,7 @@ export function FinanceOriginBadge({ movement }: FinanceOriginBadgeProps) {
         ? "warning"
         : origin === "quote"
           ? "default"
-          : "neutral";
+          : "default";
 
   return <StatusBadge label={getFinanceOriginLabel(origin)} tone={tone} />;
 }
