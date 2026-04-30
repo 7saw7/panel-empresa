@@ -28,7 +28,7 @@ export function QuotesTable({
   const columns: Array<DataTableColumn<MockQuote>> = [
     {
       key: "code",
-      header: "Código",
+      header: "Cotización",
       render: (quote) => (
         <div>
           <p className="font-medium text-neutral-950">{quote.code}</p>
@@ -84,7 +84,7 @@ export function QuotesTable({
             Editar
           </Button>
           <Button type="button" size="sm" variant="ghost" onClick={() => onPreview(quote)}>
-            Preview
+            Vista previa
           </Button>
           <Button type="button" size="sm" variant="ghost" onClick={() => onDuplicate(quote)}>
             Duplicar
@@ -96,7 +96,7 @@ export function QuotesTable({
             Aprobar
           </Button>
           <Button type="button" size="sm" variant="ghost" onClick={() => onConvertToProject(quote)}>
-            Proyecto
+            Crear proyecto
           </Button>
         </div>
       ),

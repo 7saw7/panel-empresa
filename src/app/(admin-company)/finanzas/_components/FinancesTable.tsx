@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { DataTable, type DataTableColumn } from "@/components/ui/DataTable";
 import { formatCurrency, formatDate, type MockFinanceMovement } from "@/mocks";
+import { FinanceOriginBadge } from "./FinanceOriginBadge";
 import { FinanceStatusBadge } from "./FinanceStatusBadge";
 import { FinanceTypeBadge } from "./FinanceTypeBadge";
 
@@ -22,11 +23,12 @@ export function FinancesTable({ movements, onView, onEdit, onMarkAsPaid, onPrevi
       render: (movement) => (
         <div>
           <p className="font-medium text-neutral-950">{movement.code}</p>
-          <p className="text-xs text-neutral-500">{movement.concept}</p>
+          <p className="max-w-[18rem] truncate text-xs text-neutral-500">{movement.concept}</p>
         </div>
       ),
     },
     { key: "type", header: "Tipo", render: (movement) => <FinanceTypeBadge type={movement.type} /> },
+    { key: "origin", header: "Origen", render: (movement) => <FinanceOriginBadge movement={movement} /> },
     {
       key: "thirdParty",
       header: "Cliente / proveedor",
@@ -37,7 +39,6 @@ export function FinancesTable({ movements, onView, onEdit, onMarkAsPaid, onPrevi
       header: "Proyecto",
       render: (movement) => movement.projectName ?? "No asociado",
     },
-    { key: "method", header: "Método", render: (movement) => movement.paymentMethod },
     { key: "status", header: "Estado", render: (movement) => <FinanceStatusBadge status={movement.status} /> },
     {
       key: "amount",
@@ -52,13 +53,12 @@ export function FinancesTable({ movements, onView, onEdit, onMarkAsPaid, onPrevi
     {
       key: "actions",
       header: "Acciones",
-      className: "w-[25rem]",
+      className: "w-[22rem]",
       render: (movement) => (
         <div className="flex flex-wrap gap-2">
           <Button type="button" size="sm" variant="secondary" onClick={() => onView(movement)}>Ver</Button>
           <Button type="button" size="sm" variant="ghost" onClick={() => onEdit(movement)}>Editar</Button>
           <Button type="button" size="sm" variant="ghost" onClick={() => onPreview(movement)}>Comprobante</Button>
-          <Button type="button" size="sm" variant="ghost" onClick={() => onDuplicate(movement)}>Duplicar</Button>
           <Button type="button" size="sm" variant="ghost" disabled={movement.status === "paid"} onClick={() => onMarkAsPaid(movement)}>Pagado</Button>
           <Button type="button" size="sm" variant="ghost" disabled={movement.status === "cancelled"} onClick={() => onCancel(movement)}>Cancelar</Button>
         </div>

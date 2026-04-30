@@ -10,7 +10,11 @@ type QuotePreviewModalProps = {
   onClose: () => void;
 };
 
-export function QuotePreviewModal({ open, quote, onClose }: QuotePreviewModalProps) {
+export function QuotePreviewModal({
+  open,
+  quote,
+  onClose,
+}: QuotePreviewModalProps) {
   return (
     <Modal
       open={open && Boolean(quote)}
@@ -32,7 +36,7 @@ export function QuotePreviewModal({ open, quote, onClose }: QuotePreviewModalPro
         <div className="rounded-3xl border border-neutral-200 bg-white p-6">
           <div className="flex flex-col gap-4 border-b border-neutral-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">ElectroLima Pro</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-neutral-500">Propuesta comercial</p>
               <h3 className="mt-2 text-2xl font-semibold text-neutral-950">{quote.code}</h3>
               <p className="mt-1 text-sm text-neutral-500">Cotización comercial</p>
             </div>

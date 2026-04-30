@@ -11,8 +11,12 @@ import {
 import { FinanceDetailDrawer } from "./_components/FinanceDetailDrawer";
 import { FinanceFormModal } from "./_components/FinanceFormModal";
 import { FinanceInvoicePreviewModal } from "./_components/FinanceInvoicePreviewModal";
+import { getFinanceOrigin, getFinanceOriginLabel } from "./_components/FinanceOriginBadge";
+import { FinancesAutomationSummary } from "./_components/FinancesAutomationSummary";
 import { FinancesFilters, type FinanceStatusFilter, type FinanceTypeFilter } from "./_components/FinancesFilters";
 import { FinancesHeader } from "./_components/FinancesHeader";
+import { FinancesPeriodSelector, getFinancePeriodLabel, type FinanceCustomRange, type FinancePeriod } from "./_components/FinancesPeriodSelector";
+import { formatFinancePeriodRange, isMovementInsidePeriod } from "./_components/finance-period.helpers";
 import { FinancesStats } from "./_components/FinancesStats";
 import { FinancesTable } from "./_components/FinancesTable";
 
@@ -33,9 +37,9 @@ function buildFinanceTimeline(movement: MockFinanceMovement | null): MockTimelin
       entityType: "finance",
       entityId: movement.id,
       title: "Movimiento registrado",
-      description: `${movement.code} fue creado en el módulo de finanzas.`,
+      description: `${movement.code} fue creado en el módulo de finanzas con origen ${getFinanceOriginLabel(getFinanceOrigin(movement)).toLowerCase()}.`,
       createdAt: `${movement.createdAt} 09:00`,
-      createdBy: "Admin Principal",
+      createdBy: getFinanceOrigin(movement) === "manual" ? "Admin Principal" : "Sistema mock",
     },
   ];
 
@@ -84,6 +88,11 @@ export default function FinanzasPage() {
   const [typeFilter, setTypeFilter] = useState<FinanceTypeFilter>("all");
   const [statusFilter, setStatusFilter] = useState<FinanceStatusFilter>("all");
   const [methodFilter, setMethodFilter] = useState("all");
+  const [period, setPeriod] = useState<FinancePeriod>("this_month");
+  const [customRange, setCustomRange] = useState<FinanceCustomRange>({
+    from: "2026-04-01",
+    to: "2026-04-30",
+  });
   const [selectedMovement, setSelectedMovement] = useState<MockFinanceMovement | null>(null);
   const [editingMovement, setEditingMovement] = useState<MockFinanceMovement | null>(null);
   const [previewMovement, setPreviewMovement] = useState<MockFinanceMovement | null>(null);
@@ -114,12 +123,15 @@ export default function FinanzasPage() {
       const matchesType = typeFilter === "all" || movement.type === typeFilter;
       const matchesStatus = statusFilter === "all" || movement.status === statusFilter;
       const matchesMethod = methodFilter === "all" || movement.paymentMethod === methodFilter;
+      const matchesPeriod = isMovementInsidePeriod(movement, period, customRange);
 
-      return matchesSearch && matchesType && matchesStatus && matchesMethod;
+      return matchesSearch && matchesType && matchesStatus && matchesMethod && matchesPeriod;
     });
-  }, [movements, search, typeFilter, statusFilter, methodFilter]);
+  }, [movements, search, typeFilter, statusFilter, methodFilter, period, customRange]);
 
   const selectedTimeline = useMemo(() => buildFinanceTimeline(selectedMovement), [selectedMovement]);
+
+  const periodSummaryLabel = `${getFinancePeriodLabel(period)} · ${formatFinancePeriodRange(period, customRange)}`;
 
   const showNotice = (message: string) => {
     setNotice(message);
@@ -210,7 +222,7 @@ export default function FinanzasPage() {
       <FinancesHeader
         onCreateIncome={() => handleCreateMovement("income")}
         onCreateExpense={() => handleCreateMovement("expense")}
-        onExport={() => showNotice("Reporte financiero mock exportado correctamente.")}
+        onExport={() => showNotice(`Reporte financiero mock exportado correctamente: ${periodSummaryLabel}.`)}
       />
 
       {notice ? (
@@ -219,7 +231,20 @@ export default function FinanzasPage() {
         </div>
       ) : null}
 
-      <FinancesStats movements={movements} />
+      <FinancesPeriodSelector
+        value={period}
+        customRange={customRange}
+        onChange={setPeriod}
+        onCustomRangeChange={setCustomRange}
+      />
+
+      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
+        Mostrando movimientos del periodo: <span className="font-semibold text-neutral-950">{periodSummaryLabel}</span>
+      </div>
+
+      <FinancesStats movements={filteredMovements} />
+
+      <FinancesAutomationSummary movements={filteredMovements} />
 
       <FinancesFilters
         search={search}

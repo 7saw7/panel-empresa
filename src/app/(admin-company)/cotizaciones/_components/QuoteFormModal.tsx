@@ -7,6 +7,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import { calculateQuoteTotals, clientsMock, servicesMock } from "@/mocks";
+import { getCatalogServiceById, quoteCatalogServices } from "./quote-service-catalog";
 import type { MockQuote, MockQuoteStatus } from "@/mocks";
 
 type QuoteFormModalProps = {
@@ -27,6 +28,7 @@ type QuoteItemFormState = {
 type QuoteFormState = {
   clientId: string;
   service: string;
+  selectedCatalogServiceId: string;
   status: MockQuoteStatus;
   issueDate: string;
   expirationDate: string;
@@ -49,6 +51,7 @@ function getDefaultExpirationDate() {
 const emptyForm: QuoteFormState = {
   clientId: String(clientsMock[0]?.id ?? 1),
   service: servicesMock[0]?.name ?? "Servicio técnico",
+  selectedCatalogServiceId: quoteCatalogServices[0]?.id ?? "",
   status: "draft",
   issueDate: getToday(),
   expirationDate: getDefaultExpirationDate(),
@@ -64,6 +67,7 @@ function quoteToForm(quote: MockQuote | null): QuoteFormState {
   return {
     clientId: String(quote.clientId),
     service: quote.service,
+    selectedCatalogServiceId: quoteCatalogServices[0]?.id ?? "",
     status: quote.status,
     issueDate: quote.issueDate,
     expirationDate: quote.expirationDate,
@@ -113,6 +117,25 @@ export function QuoteFormModal({ open, quote, nextCode, onClose, onSubmit }: Quo
     }));
   }
 
+  function addCatalogService() {
+    const service = getCatalogServiceById(form.selectedCatalogServiceId);
+    if (!service) return;
+
+    setForm((current) => ({
+      ...current,
+      service: current.service.trim().length > 0 ? current.service : service.name,
+      items: [
+        ...current.items,
+        {
+          id: Date.now(),
+          description: `Servicio predefinido: ${service.name}`,
+          quantity: String(service.suggestedQuantity),
+          unitPrice: String(service.unitPrice),
+        },
+      ],
+    }));
+  }
+
   function removeItem(id: number) {
     setForm((current) => ({ ...current, items: current.items.filter((item) => item.id !== id) }));
   }
@@ -152,7 +175,7 @@ export function QuoteFormModal({ open, quote, nextCode, onClose, onSubmit }: Quo
     <Modal
       open={open}
       title={isEditing ? "Editar cotización" : "Nueva cotización"}
-      description="Formulario mock con cálculo automático de subtotal, IGV y total."
+      description="Formulario mock con servicios predefinidos, items editables y cálculo automático de subtotal, IGV y total."
       onClose={onClose}
       footer={
         <div className="flex justify-end gap-2">
@@ -179,13 +202,34 @@ export function QuoteFormModal({ open, quote, nextCode, onClose, onSubmit }: Quo
           <Input required type="date" label="Fecha vencimiento" value={form.expirationDate} onChange={(event) => updateForm("expirationDate", event.target.value)} />
         </div>
 
-        <div className="space-y-3 rounded-3xl border border-neutral-200 p-4">
-          <div className="flex items-center justify-between gap-3">
+        <div className="space-y-4 rounded-3xl border border-neutral-200 p-4">
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <p className="font-medium text-neutral-950">Items</p>
-              <p className="text-sm text-neutral-500">Servicios, productos o conceptos cotizados.</p>
+              <p className="font-medium text-neutral-950">Servicios e items</p>
+              <p className="text-sm text-neutral-500">Agrega servicios predefinidos o conceptos personalizados. Los totales se calculan automáticamente.</p>
             </div>
-            <Button type="button" size="sm" variant="secondary" onClick={addItem}>Agregar item</Button>
+
+            <div className="grid gap-3 sm:grid-cols-[minmax(220px,1fr)_auto_auto] sm:items-end">
+              <Select
+                label="Servicio predefinido"
+                value={form.selectedCatalogServiceId}
+                onChange={(event) => updateForm("selectedCatalogServiceId", event.target.value)}
+              >
+                {quoteCatalogServices.map((service) => (
+                  <option key={service.id} value={service.id}>
+                    {service.name} · S/ {service.unitPrice.toFixed(2)}
+                  </option>
+                ))}
+              </Select>
+
+              <Button type="button" size="sm" variant="secondary" onClick={addCatalogService}>
+                Agregar servicio
+              </Button>
+
+              <Button type="button" size="sm" variant="ghost" onClick={addItem}>
+                Item libre
+              </Button>
+            </div>
           </div>
 
           {form.items.map((item) => (

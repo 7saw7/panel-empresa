@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
 import { SectionCard } from "@/components/ui/SectionCard";
 import { formatCurrency, formatDate, type MockFinanceMovement, type MockTimelineEvent } from "@/mocks";
+import { FinanceOriginBadge, getFinanceOriginDescription } from "./FinanceOriginBadge";
 import { FinanceStatusBadge } from "./FinanceStatusBadge";
 import { FinanceTypeBadge } from "./FinanceTypeBadge";
 
@@ -37,8 +38,12 @@ export function FinanceDetailDrawer({ movement, timeline, open, onClose, onEdit,
             <div className="grid gap-4 sm:grid-cols-2">
               <div><p className="text-xs uppercase tracking-wide text-neutral-500">Tipo</p><div className="mt-2"><FinanceTypeBadge type={movement.type} /></div></div>
               <div><p className="text-xs uppercase tracking-wide text-neutral-500">Estado</p><div className="mt-2"><FinanceStatusBadge status={movement.status} /></div></div>
+              <div><p className="text-xs uppercase tracking-wide text-neutral-500">Origen</p><div className="mt-2"><FinanceOriginBadge movement={movement} /></div></div>
               <div><p className="text-xs uppercase tracking-wide text-neutral-500">Monto</p><p className="mt-2 text-lg font-semibold text-neutral-950">{formatCurrency(movement.amount)}</p></div>
-              <div><p className="text-xs uppercase tracking-wide text-neutral-500">Método</p><p className="mt-2 text-sm text-neutral-700">{movement.paymentMethod}</p></div>
+              <div className="sm:col-span-2">
+                <p className="text-xs uppercase tracking-wide text-neutral-500">Lectura operativa</p>
+                <p className="mt-2 text-sm leading-6 text-neutral-700">{getFinanceOriginDescription(movement)}</p>
+              </div>
             </div>
           </SectionCard>
 
@@ -47,12 +52,13 @@ export function FinanceDetailDrawer({ movement, timeline, open, onClose, onEdit,
               <div><p className="text-xs uppercase tracking-wide text-neutral-500">Cliente / proveedor</p><p className="mt-2 text-sm text-neutral-700">{movement.clientName ?? movement.providerName ?? "Sin asociado"}</p></div>
               <div><p className="text-xs uppercase tracking-wide text-neutral-500">Proyecto</p><p className="mt-2 text-sm text-neutral-700">{movement.projectName ?? "No asociado"}</p></div>
               <div><p className="text-xs uppercase tracking-wide text-neutral-500">Cotización</p><p className="mt-2 text-sm text-neutral-700">{movement.quoteId ? `#${movement.quoteId}` : "No asociada"}</p></div>
-              <div><p className="text-xs uppercase tracking-wide text-neutral-500">Creación</p><p className="mt-2 text-sm text-neutral-700">{formatDate(movement.createdAt)}</p></div>
+              <div><p className="text-xs uppercase tracking-wide text-neutral-500">Método</p><p className="mt-2 text-sm text-neutral-700">{movement.paymentMethod}</p></div>
             </div>
           </SectionCard>
 
           <SectionCard title="Fechas">
             <div className="grid gap-4 sm:grid-cols-2">
+              <div><p className="text-xs uppercase tracking-wide text-neutral-500">Creación</p><p className="mt-2 text-sm text-neutral-700">{formatDate(movement.createdAt)}</p></div>
               <div><p className="text-xs uppercase tracking-wide text-neutral-500">Vencimiento</p><p className="mt-2 text-sm text-neutral-700">{formatDate(movement.dueDate)}</p></div>
               <div><p className="text-xs uppercase tracking-wide text-neutral-500">Pago</p><p className="mt-2 text-sm text-neutral-700">{movement.paidAt ? formatDate(movement.paidAt) : "Pendiente"}</p></div>
             </div>

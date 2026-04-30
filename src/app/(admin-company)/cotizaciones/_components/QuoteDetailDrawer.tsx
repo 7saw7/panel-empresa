@@ -50,6 +50,9 @@ export function QuoteDetailDrawer({
 
         <div className="flex-1 space-y-5 overflow-y-auto p-6">
           <SectionCard title="Resumen comercial">
+            <p className="mb-4 text-sm text-neutral-500">
+              Flujo comercial controlado: borrador → enviada → aprobada → proyecto.
+            </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <Info label="Servicio" value={quote.service} />
               <div className="space-y-1">
@@ -122,7 +125,7 @@ export function QuoteDetailDrawer({
         </div>
 
         <div className="flex flex-wrap justify-end gap-2 border-t border-neutral-200 px-6 py-4">
-          <Button type="button" variant="secondary" onClick={() => onPreview(quote)}>Preview</Button>
+          <Button type="button" variant="secondary" onClick={() => onPreview(quote)}>Vista previa</Button>
           <Button type="button" variant="ghost" onClick={() => onEdit(quote)}>Editar</Button>
           <Button type="button" variant="ghost" onClick={() => onSend(quote)}>Enviar</Button>
           <Button type="button" variant="ghost" onClick={() => onApprove(quote)}>Aprobar</Button>

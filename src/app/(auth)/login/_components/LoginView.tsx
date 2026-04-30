@@ -6,7 +6,7 @@ export function LoginView() {
       <div className="w-full max-w-md rounded-3xl border border-neutral-200 bg-white p-8 shadow-sm">
         <div className="mb-6 text-center">
           <p className="text-xs font-medium uppercase tracking-[0.24em] text-neutral-400">
-            Vasirono
+            ElectroLima
           </p>
           <h1 className="mt-3 text-2xl font-semibold tracking-tight text-neutral-950">
             Acceder al panel empresa

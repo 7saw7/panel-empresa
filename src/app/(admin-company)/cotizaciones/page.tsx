@@ -13,6 +13,7 @@ import { QuoteFormModal } from "./_components/QuoteFormModal";
 import { QuotePreviewModal } from "./_components/QuotePreviewModal";
 import { QuotesFilters } from "./_components/QuotesFilters";
 import { QuotesHeader } from "./_components/QuotesHeader";
+import { QuotesCommercialSummary } from "./_components/QuotesCommercialSummary";
 import { QuotesStats } from "./_components/QuotesStats";
 import { QuotesTable } from "./_components/QuotesTable";
 
@@ -129,8 +130,8 @@ export default function CotizacionesPage() {
 
   function handleConvertToProject(quote: MockQuote) {
     const message = quote.status === "approved"
-      ? `Proyecto mock iniciado desde ${quote.code}.`
-      : `Primero se recomienda aprobar ${quote.code}; conversión simulada.`;
+      ? `Proyecto mock iniciado desde ${quote.code}. La cotización queda lista para generar ingresos por adelanto, fase o cierre.`
+      : `Primero se recomienda aprobar ${quote.code}; conversión simulada para la demo.`;
     showNotice(message);
   }
 
@@ -155,6 +156,8 @@ export default function CotizacionesPage() {
       ) : null}
 
       <QuotesStats quotes={quotes} />
+
+      <QuotesCommercialSummary quotes={filteredQuotes} />
 
       <QuotesFilters
         search={search}
